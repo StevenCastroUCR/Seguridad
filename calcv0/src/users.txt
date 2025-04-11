@@ -1,3 +1,0 @@
-Steven 12345
-Rafa 54321
-admin admin pass

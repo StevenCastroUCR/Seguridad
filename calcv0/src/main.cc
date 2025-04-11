@@ -1,10 +1,12 @@
 #include <iostream>
 #include <map>
+#include <cstring>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <stack>
+#include <ctime>
 using namespace std;
 
 
@@ -12,15 +14,38 @@ void menu(bool isAdmin);
 string textParser();
 int precedence(const std::string& op);
 int evalPostfix(const std::vector<std::string>& postfix);
-bool authentication();
 std::vector<std::string> infixToPostfix(const std::vector<std::string>& tokens);
 std::vector<std::string> tokenize(const std::string& expr);
+bool authentication(bool& isAdmin);
+void createUSer();
+string xorCipher(const string& input);
+void log(const string& event);
+
+/* void encript(); //Delete this
+
+void encript
+   () {
+        ifstream in("usersE.txt");
+        ofstream out("users.txt");
+        string line;
+    
+        while (getline(in, line)) {
+            out << xorDecrypt(line) << endl;
+        }
+    
+        cout << "Encryption complete! Saved" << endl;
+    }
+*/
 
 int main() {
-    std::cout << "Calculadora texto" << std::endl;
+    
+    // encript();
+    bool isAdmin= false;
 
-    menu(authentication());
-
+    if (!authentication(isAdmin)) {
+        return 1; 
+    }
+    menu(isAdmin);
     return 0;
 }
 
@@ -28,12 +53,13 @@ void menu(bool isAdmin){
     int option;
     while (true) {
         cout << "Laboratorio 01 de seguridad"<<endl;
+        std::cout << "Calculadora texto\n" << std::endl;
         if (isAdmin) {
             cout << "1. Crear usuario" << endl;
-            cout << "2. Calculadora de Texto" << endl;
+            cout << "2. Calcular de Texto" << endl;
             cout << "3. salir" << endl;
         } else {
-            cout << "1. Calculadora de Texto" << endl;
+            cout << "1. Calcular de Texto" << endl;
             cout << "2. Salir" << endl;
         }
 
@@ -43,6 +69,7 @@ void menu(bool isAdmin){
         if  (isAdmin) {
             switch (option) {
                 case 1:
+                    createUSer();
                     break;
                 case 2:
                     textParser();
@@ -68,6 +95,8 @@ void menu(bool isAdmin){
     }
 }
 
+
+// log("<MENSAJE DE EVENTO>");
 string textParser() {
     string input;
     cin>> input;
@@ -78,14 +107,16 @@ string textParser() {
 
     map<string, string> especiales = {
         {"once", "11"}, {"doce", "12"}, {"trece", "13"}, {"catorce", "14"}, {"quince", "15"},
-        {"dieciseis", "16"}, {"diecisiete", "17"}, {"dieciocho", "18"}, {"diecinueve", "19"}
+        {"dieciseis", "16"}, {"diecisiete", "17"}, {"dieciocho", "18"}, {"diecinueve", "19"},
+        {"veintiuno", "21"}, {"veintidos", "22"}, {"veintitres", "23"}, {"veinticuatro", "24"},
+        {"veinticinco", "25"}, {"veintiseis", "26"}, {"veintisiete", "27"},
+        {"veintiocho", "28"}, {"veintinueve", "29"}
     };
 
     map<string, string> decenas = {
-        {"veinte", "20"}, {"veintiuno", "21"}, {"veintidos", "22"}, {"veintitres", "23"},
-        {"veinticuatro", "24"}, {"veinticinco", "25"}, {"veintiseis", "26"}, {"veintisiete", "27"},
-        {"veintiocho", "28"}, {"veintinueve", "29"}, {"treinta", "30"}, {"cuarenta", "40"},
-        {"cincuenta", "50"}, {"sesenta", "60"}, {"setenta", "70"}, {"ochenta", "80"}, {"noventa", "90"}
+        {"veinte", "20"}, {"treinta", "30"}, {"cuarenta", "40"},
+        {"cincuenta", "50"}, {"sesenta", "60"}, {"setenta", "70"},
+        {"ochenta", "80"}, {"noventa", "90"}
     };
 
     vector<size_t> operandPositions;
@@ -202,56 +233,130 @@ int evalPostfix(const std::vector<std::string>& postfix) {
     return stk.top();
 }
 
-bool authentication() {
-    string idUser;
-    string password;
+bool authentication(bool& isAdmin) {
+    int attempts = 0;
+    const int maxAttempts = 3;
 
     ifstream usersFile("users.txt");
+
     if (!usersFile) {
-        cerr << "Error: No se encontro el archivo" << endl;
-        return false;
+            cerr << "Error: No se encontro el archivo" << endl;
+            return false;
     }
+    
+    while (attempts < maxAttempts) {
+        string idUser;
+        string password;        
+        cout << "Digite nombre usuario para continuar: ";
+        cin >> idUser;
+        cout << "Digite la contrasena: ";
+        cin >> password;
+        
+        string line;
 
-    cout << "Digite nombre usuario para continuar:" ;
-    cin >> idUser;
-    cout << "Digite la contrasena:";
-    cin >> password;
+        while (getline(usersFile, line)) {
+            isAdmin = false;
+            line = xorCipher(line);
+            istringstream iss(line);
+            string start, user, pass;
+            iss >> start;
 
-    string line;
-    bool match = false;
-    bool isAdmin = false;
-
-    while (getline(usersFile, line)) {
-        istringstream iss(line);
-        string admin, user, pass;
-        iss >> admin;
-
-        if (admin == "admin") {
-            iss >> user >> pass;
-            if((idUser == user && password == pass)) {
-                match = true;
+            if (start == "admin") {
+                iss >> user >> pass;
                 isAdmin = true;
-                break;
+            } else {
+                user = start;
+                iss >> pass;
+            }
+
+            if (idUser == user && password == pass) {
+                log("login successful: " + idUser);
+                cout << (isAdmin ? "Cuenta Administrador " : "")
+                     << "Bienvenido: " << idUser << "!" << endl;
+                return true;
             }
         }
-        else {
-            user = admin;
-            iss >> pass;
-
-            if((idUser == user && password == pass)) {
-                match = true;
-                break;
-            }
-        }
-    }
-
-    if (match) {
-        if (isAdmin)
-            cout << "Cuenta Administrador ";
-        cout << "Bienvenido!" << endl;
-    } else {
+        log("login error: " + idUser);
         cout << "Error: usuario o contrasena invalidos" << endl;
+        attempts++;
+        if (attempts < maxAttempts) {
+            cout << "Intentos restantes: " << (maxAttempts - attempts) << endl;
+        }
     }
-    return isAdmin;
+
+    cout << "Agotó el numero de intentos" << endl;
+    return false;     
 };
 
+void createUSer() {
+    string idUser, pass;
+    string isAdmin;
+    while (true) {
+        cout << "Digite el nombre Usuario: ";
+        if (idUser.length() > 20) {
+            cout << " Nombre de usuario excede la longitud permitida(20 letras).\n";
+        }
+        cin >> idUser;
+    }
+    
+    cout << "Enter label 2: ";
+    cin >> pass;
+    cout << "Es un usuario administrador ? 1-) Si , 2-) No :";
+    cin >> isAdmin;
+
+    string line;
+    if (isAdmin == "1" ) {
+        line = "admin " + idUser + " " + pass;
+    } else {
+        line = idUser + " " + pass;
+    }
+
+    string encrypt = xorCipher(line);
+
+    ofstream usersFile("users.txt", ios::app); // append mode
+    if (!usersFile) {
+        cerr << "Error al acceder a archivo!" << endl;
+        return;
+    }
+
+    usersFile.close();
+    log("User added succesfully" + idUser);
+    cout << "Usuario añadido correctamente";
+};
+
+
+// Codigo de desencriptamiento usando el cifrado XOR
+// https://stackoverflow.com/questions/20365005/c-xor-encryption
+string xorCipher(const string& input) {
+    char key= 'N';
+    string output = input;
+    for (char& c: output) {
+        c ^= key;
+    }
+    return output;
+}
+
+void xorEncrypt(const string& input) {
+    ifstream in(input);
+    ofstream out("users.txt");
+    string line;
+    while (getline(in, line)) {
+        out << xorCipher(line) << endl;
+    }
+}
+
+void log(const string& event) {
+    ofstream logFile("log.txt", ios::app);
+    if(!logFile) {
+        cerr << "Error al abrir archivo" << endl;
+        return;
+    }
+
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    if (dt[strlen(dt) - 1] == '\n') {
+        dt[strlen(dt) - 1] = '\0';
+    }
+
+    logFile << "[" << dt << "] " << event << endl;
+}
