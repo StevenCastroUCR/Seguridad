@@ -18,28 +18,12 @@ std::vector<std::string> infixToPostfix(const std::vector<std::string>& tokens);
 std::vector<std::string> tokenize(const std::string& expr);
 bool authentication(bool& isAdmin);
 void createUSer();
+bool userExists(const string& userVerfication);
 string xorCipher(const string& input);
 void log(const string& event);
 
-/* void encript(); //Delete this
-
-void encript
-   () {
-        ifstream in("usersE.txt");
-        ofstream out("users.txt");
-        string line;
-    
-        while (getline(in, line)) {
-            out << xorDecrypt(line) << endl;
-        }
-    
-        cout << "Encryption complete! Saved" << endl;
-    }
-*/
-
 int main() {
     
-    // encript();
     bool isAdmin= false;
 
     if (!authentication(isAdmin)) {
@@ -97,36 +81,46 @@ void menu(bool isAdmin){
 
 
 // log("<MENSAJE DE EVENTO>");
+
 string textParser() {
+ 
+    while (true)
+    {
+    string parsed;
+    string inputToCheck;
     string input;
-    cin>> input;
-    map<string, string> unidades = {
-        {"uno", "1"}, {"dos", "2"}, {"tres", "3"}, {"cuatro", "4"}, {"cinco", "5"},
-        {"seis", "6"}, {"siete", "7"}, {"ocho", "8"}, {"nueve", "9"}, {"diez", "10"}
+    std::cout << "Escriba la operacion:\n" ;
+    std::getline(std::cin, inputToCheck);
+    for (char c : inputToCheck) {
+        if (c != ' ') { 
+            input += std::tolower(c); 
+        }
+    }
+
+    map<string, int> unidades = {
+        {"uno", 1}, {"dos", 2}, {"tres", 3}, {"cuatro", 4}, {"cinco", 5},
+        {"seis", 6}, {"siete", 7}, {"ocho", 8}, {"nueve", 9}, {"diez", 10}
     };
 
-    map<string, string> especiales = {
-        {"once", "11"}, {"doce", "12"}, {"trece", "13"}, {"catorce", "14"}, {"quince", "15"},
-        {"dieciseis", "16"}, {"diecisiete", "17"}, {"dieciocho", "18"}, {"diecinueve", "19"},
-        {"veintiuno", "21"}, {"veintidos", "22"}, {"veintitres", "23"}, {"veinticuatro", "24"},
-        {"veinticinco", "25"}, {"veintiseis", "26"}, {"veintisiete", "27"},
-        {"veintiocho", "28"}, {"veintinueve", "29"}
+    map<string, int> especiales = {
+        {"once", 11}, {"doce", 12}, {"trece", 13}, {"catorce", 14}, {"quince", 15},
+        {"dieciseis", 16}, {"diecisiete", 17}, {"dieciocho", 18}, {"diecinueve", 19}
     };
 
-    map<string, string> decenas = {
-        {"veinte", "20"}, {"treinta", "30"}, {"cuarenta", "40"},
-        {"cincuenta", "50"}, {"sesenta", "60"}, {"setenta", "70"},
-        {"ochenta", "80"}, {"noventa", "90"}
+    map<string, int> decenas = {
+        {"veinte", 20}, {"treinta", 30}, {"cuarenta", 40}, {"cincuenta", 50},
+        {"sesenta", 60}, {"setenta", 70}, {"ochenta", 80}, {"noventa", 90}
     };
 
     vector<size_t> operandPositions;
     for (size_t i = 0; i < input.size(); ++i) {
-        if ((input[i] == '+') || (input[i] == '-') || (input[i] == '*') || (input[i] == '/')) {
+        if ((input[i] == '+') || (input[i] == '-') || (input[i] == '*') || (input[i] == '/') || 
+            (input[i] == '(') || (input[i] == ')')) {
             operandPositions.push_back(i);
         }
     }
 
-    string parsed;
+    
     size_t start = 0;
 
     for (size_t i = 0; i <= operandPositions.size(); ++i) {
@@ -134,31 +128,76 @@ string textParser() {
         string palabra = input.substr(start, end - start);
 
         string numero;
-        if (unidades.count(palabra)) {
-            numero = unidades[palabra];
-        } else if (especiales.count(palabra)) {
-            numero = especiales[palabra];
-        } else if (decenas.count(palabra)) {
-            numero = decenas[palabra];
-        } else {
-            numero = "???";
+        if (!palabra.empty()) {
+            if (especiales.count(palabra)) {
+                numero = to_string(especiales[palabra]);
+            } else if (decenas.count(palabra)) {
+                numero = to_string(decenas[palabra]);
+            } else if (unidades.count(palabra)) {
+                numero = to_string(unidades[palabra]);
+            } else {
+                size_t y_pos = palabra.find("y");
+                if (y_pos != string::npos) {
+                    string parte1 = palabra.substr(0, y_pos);
+                    string parte2 = palabra.substr(y_pos + 1);
+
+                    int valor1 = 0, valor2 = 0;
+                    if (decenas.count(parte1)) {
+                        valor1 = decenas[parte1];
+                    }
+                    if (unidades.count(parte2)) {
+                        valor2 = unidades[parte2];
+                    }
+
+                    if (valor1 > 0 && valor2 > 0) {
+                        numero = to_string(valor1 + valor2);
+                    } else {
+                        numero = "???";
+                    }
+                } else {
+                    numero = "???";
+                }
+            }
+            parsed += numero;
         }
 
-        parsed += numero;
-
         if (i < operandPositions.size()) {
-            parsed += input[operandPositions[i]];
+            char op = input[operandPositions[i]];
+            parsed += op;
             start = operandPositions[i] + 1;
         }
     }
 
 
-    auto tokens = tokenize(parsed);
-    auto postfix = infixToPostfix(tokens);
-    int resultado = evalPostfix(postfix);
-    std::cout << "Resultado: " << resultado << std::endl;
-    return parsed;
+   auto tokens = tokenize(parsed);
+   auto postfix = infixToPostfix(tokens);
+   int resultado = evalPostfix(postfix); 
+   std::cout << "Resultado: " << resultado << std::endl; 
+    int nextStep;
+    std::cout << "¿Quiere hacer otra operación?\n1-) Si , 2-) No\n " << std::endl; 
+   cin>>nextStep;
+     std::cin.ignore();
+   if (nextStep==1)
+   {
+    /* code */
+   }else if (nextStep ==2)
+   {
+    break;
+   }
+   
+   
+   
+    }
+    return "";
+    
 }
+
+
+
+
+
+
+
 int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1;
     if (op == "*" || op == "/") return 2;
@@ -171,12 +210,15 @@ std::vector<std::string> tokenize(const std::string& expr) {
     for (char ch : expr) {
         if (std::isdigit(ch)) {
             num += ch;
-        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+        } else {
             if (!num.empty()) {
                 tokens.push_back(num);
                 num.clear();
             }
-            tokens.push_back(std::string(1, ch));
+
+            if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '(' || ch == ')') {
+                tokens.push_back(std::string(1, ch));
+            }
         }
     }
 
@@ -186,6 +228,7 @@ std::vector<std::string> tokenize(const std::string& expr) {
     return tokens;
 }
 
+
 std::vector<std::string> infixToPostfix(const std::vector<std::string>& tokens) {
     std::vector<std::string> output;
     std::stack<std::string> ops;
@@ -193,6 +236,16 @@ std::vector<std::string> infixToPostfix(const std::vector<std::string>& tokens) 
     for (const std::string& token : tokens) {
         if (isdigit(token[0])) {
             output.push_back(token);
+        } else if (token == "(") {
+            ops.push(token);
+        } else if (token == ")") {
+            while (!ops.empty() && ops.top() != "(") {
+                output.push_back(ops.top());
+                ops.pop();
+            }
+            if (!ops.empty() && ops.top() == "(") {
+                ops.pop();  // quitar el paréntesis izquierdo
+            }
         } else {
             while (!ops.empty() && precedence(ops.top()) >= precedence(token)) {
                 output.push_back(ops.top());
@@ -213,15 +266,16 @@ std::vector<std::string> infixToPostfix(const std::vector<std::string>& tokens) 
 
 
 
+
 int evalPostfix(const std::vector<std::string>& postfix) {
-    std::stack<int> stk;
+    std::stack<double> stk;
 
     for (const std::string& token : postfix) {
         if (isdigit(token[0])) {
             stk.push(std::stoi(token));
         } else {
-            int b = stk.top(); stk.pop();
-            int a = stk.top(); stk.pop();
+            double b = stk.top(); stk.pop();
+            double a = stk.top(); stk.pop();
 
             if (token == "+") stk.push(a + b);
             else if (token == "-") stk.push(a - b);
@@ -232,6 +286,7 @@ int evalPostfix(const std::vector<std::string>& postfix) {
 
     return stk.top();
 }
+
 
 bool authentication(bool& isAdmin) {
     int attempts = 0;
@@ -253,6 +308,9 @@ bool authentication(bool& isAdmin) {
         cin >> password;
         
         string line;
+
+        usersFile.clear();
+        usersFile.seekg(0, ios::beg);
 
         while (getline(usersFile, line)) {
             isAdmin = false;
@@ -284,32 +342,65 @@ bool authentication(bool& isAdmin) {
         }
     }
 
-    cout << "Agotó el numero de intentos" << endl;
+    cout << "Agoto el numero de intentos" << endl;
     return false;     
 };
 
 void createUSer() {
     string idUser, pass;
-    string isAdmin;
+    int isAdmin;
+    string line;
+
     while (true) {
         cout << "Digite el nombre Usuario: ";
-        if (idUser.length() > 20) {
-            cout << " Nombre de usuario excede la longitud permitida(20 letras).\n";
-        }
         cin >> idUser;
+        if (idUser.length() > 20) {
+            log("Error user creation, invalid user name");
+            cout << " Nombre de usuario excede la longitud permitida(20 caracteres).\n";
+            continue;
+        }
+        if (userExists(idUser)) {
+            log("Error user creation, user already in use");
+            cout << "Nombre de usuario ya existe\n";
+            continue;
+        }
+
+        break;        
     }
     
-    cout << "Enter label 2: ";
-    cin >> pass;
-    cout << "Es un usuario administrador ? 1-) Si , 2-) No :";
-    cin >> isAdmin;
-
-    string line;
-    if (isAdmin == "1" ) {
-        line = "admin " + idUser + " " + pass;
-    } else {
-        line = idUser + " " + pass;
+    while (true) {
+        cout << "Digite la contrasena: ";
+        cin >> pass;
+        if (pass.length() > 20) {
+            log("Error user creation, invalid password");
+            cout << "Contraseña excede longitud permitida\n";
+            continue;
+        }
+        string cpass;
+        cout << "Digite la contrasena nuevamente: ";
+        cin >> cpass;
+        if (!(pass==cpass)) {
+            log("Error user creation, password mismatch");
+            cout << "Las contrasenas no coinciden\n";
+        }
+        
     }
+    
+    while (true)
+        cout << "Es un usuario administrador ? 1-) Si , 2-) No :";
+        cin >> isAdmin;
+
+        switch (isAdmin) {
+            case 1:
+                line = "admin " + idUser + " " + pass;
+                break;
+            case 2:
+                line = idUser + " " + pass;
+                break;
+            default:
+                cout << "Opcion invalida\n";
+                break;    
+        }
 
     string encrypt = xorCipher(line);
 
@@ -323,6 +414,29 @@ void createUSer() {
     log("User added succesfully" + idUser);
     cout << "Usuario añadido correctamente";
 };
+
+bool userExists(const string& userVerfication) {
+    ifstream usersFile("users.txt");
+    string line;
+    
+    while (getline(usersFile, line)) {
+        string decryptedLine = xorCipher(line);
+        istringstream iss(decryptedLine);
+        string token;
+
+        if (decryptedLine.find("admin") == 0) {
+            iss >> token; 
+        }
+
+        string existingLabel1;
+        iss >> existingLabel1;
+
+        if (existingLabel1 == userVerfication) {
+            return true;
+        }
+    }
+    return false;
+}
 
 
 // Codigo de desencriptamiento usando el cifrado XOR

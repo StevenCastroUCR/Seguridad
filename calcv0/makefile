@@ -16,7 +16,7 @@ endif
 
 # Targets
 all:
-	$(MKDIR)
+	$(MKDIR) obj bin
 	g++ $(FLAGS) src/main.cc -o obj$(SLASH)calc.o
 	g++ -g -o bin$(SLASH)organizador$(EXE) obj$(SLASH)calc.o
 
