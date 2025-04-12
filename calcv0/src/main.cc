@@ -28,7 +28,7 @@ void xorEncrypt();
 int main()
 {
 
-    //xorEncrypt();
+    xorEncrypt();
 
     bool isAdmin = false;
 
@@ -202,6 +202,7 @@ string textParser()
             }
         }
 
+        cout << "Cadena parseada: " << parsed << endl;
         auto tokens = tokenize(parsed);
         auto postfix = infixToPostfix(tokens);
         int resultado = evalPostfix(postfix);
@@ -259,7 +260,7 @@ std::vector<std::string> tokenize(const std::string &expr)
     if (!num.empty())
         tokens.push_back(num);
 
-    tokens.clear();
+   
     return tokens;
 }
 
@@ -300,13 +301,12 @@ std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens)
             ops.push(token);
         }
     }
-
     while (!ops.empty())
     {
         output.push_back(ops.top());
         ops.pop();
     }
-    output.clear();
+
 
     return output;
 }
