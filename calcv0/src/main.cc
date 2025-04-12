@@ -17,6 +17,7 @@ int evalPostfix(const std::vector<std::string> &postfix);
 std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens);
 std::vector<std::string> tokenize(const std::string &expr);
 bool authentication(bool &isAdmin);
+string readInput(const string& prompt);
 void createUSer();
 bool userExists(const string &userVerfication);
 string xorCipher(const string &input);
@@ -364,10 +365,8 @@ bool authentication(bool &isAdmin)
     {
         string idUser;
         string password;
-        cout << "Digite nombre usuario para continuar: ";
-        cin >> idUser;
-        cout << "Digite la contrasena: ";
-        cin >> password;
+        idUser = readInput("Digite nombre usuario : ");
+        password = readInput("Digite la contrasena: ");
 
         string line;
 
@@ -414,6 +413,28 @@ bool authentication(bool &isAdmin)
     return false;
 };
 
+string readInput(const string& prompt) {
+    string input;
+    while (true) {
+        cout << prompt;
+        getline(cin, input);
+
+        istringstream iss(input);
+        string word, leftover;
+        iss >> word >> leftover;
+
+        if (word.empty()) {
+            log("Error information not entered");
+            cout << "Error no ha digitado.\n";
+        } else if (!leftover.empty()) {
+            log("Error invalid input");
+            cout << "La entrada no es valida intelo de nuevo\n";
+        } else {
+            return word;
+        }
+    }
+}
+
 void createUSer()
 {
     string idUser, pass;
@@ -422,8 +443,7 @@ void createUSer()
 
     while (true)
     {
-        cout << "Digite el nombre Usuario: ";
-        cin >> idUser;
+        idUser = readInput("Digite el nombre Usuario: ");
         if (idUser.length() > 20)
         {
             log("Error user creation, invalid user name");
@@ -442,8 +462,7 @@ void createUSer()
 
     while (true)
     {
-        cout << "Digite la contrasena: ";
-        cin >> pass;
+        pass = readInput("Digite la contrasena: ");
         if (pass.length() > 20)
         {
             log("Error user creation, invalid password");
