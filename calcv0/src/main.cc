@@ -470,7 +470,7 @@ void createUser()
 
     while (true)
     {
-        idUser = readInput("Digite el nombre Usuario: ");
+        idUser = readInput("Digite el nombre Usuario nuevo: ");
         if (idUser.length() > 20)
         {
             log("Error user creation, invalid user name");
@@ -509,7 +509,7 @@ void createUser()
 
     while (true)
     {
-        isAdmin = readInput("Es un usuario administrador ? 1-) Si , 2-) No :");;
+        isAdmin = readInput("Es un usuario administrador ? 1-) Si , 2-) No: \n");;
 
         switch (stoi(isAdmin))
         {
@@ -534,7 +534,7 @@ void createUser()
         cerr << "Error al acceder a archivo!" << endl;
         return;
     }
-
+    usersFile << encrypt << endl; 
     usersFile.close();
     log("User added succesfully " + idUser);
     cout << "Usuario anadido correctamente\n";

@@ -19,7 +19,7 @@ endif
 # Targets
 all: obj bin
 	g++ $(FLAGS) src/main.cc -o obj$(SLASH)calc.o
-	g++ -g -o bin$(SLASH)organizador$(EXE) obj$(SLASH)calc.o
+	g++ -g -o bin$(SLASH)calculator$(EXE) obj$(SLASH)calc.o
 
 # Create directories
 obj:

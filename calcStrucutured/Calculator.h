@@ -18,7 +18,7 @@ private:
 
 
     std::string readInput(const std::string& prompt);
-    void log(const std::string& message);
+    void log(const std::string& message); 
 };
 
 #endif // CALCULATOR_H

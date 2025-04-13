@@ -58,3 +58,10 @@
 [Sat Apr 12 18:44:17 2025] Non valid operationdos + 3
 [Sat Apr 12 18:44:56 2025] login error: admmin
 [Sat Apr 12 18:45:02 2025] login successful: admin
+[Sun Apr 13 14:46:36 2025] login successful: admin
+[Sun Apr 13 14:48:39 2025] User added succesfully Steven
+[Sun Apr 13 14:50:05 2025] login error: Steven
+[Sun Apr 13 14:50:27 2025] login successful: admin
+[Sun Apr 13 14:57:31 2025] login successful: admin
+[Sun Apr 13 14:57:47 2025] User added succesfully Steven
+[Sun Apr 13 14:58:09 2025] login successful: Steven
