@@ -574,7 +574,7 @@ string xorCipher(const string &input)
 void xorEncrypt()
 {
     ifstream in("usersE.txt");
-    ofstream out("users.txt");
+    ofstream out("users.txt", ios::out | ios::binary);
     string line;
 
     if (!in.is_open() || !out.is_open())
@@ -587,6 +587,9 @@ void xorEncrypt()
         line.erase(remove(line.begin(), line.end(), '\r'), line.end());
         out << xorCipher(line) << endl;
     }
+    in.close();
+    out.close();
+        
 }
 
 void log(const string &event)

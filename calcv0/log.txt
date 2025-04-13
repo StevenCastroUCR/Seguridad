@@ -76,3 +76,11 @@
 [Sun Apr 13 15:20:08 2025] login successful: admin
 [Sun Apr 13 15:20:24 2025] User added succesfully Steven
 [Sun Apr 13 15:20:45 2025] login successful: Steven
+[Sun Apr 13 15:29:06 2025] login error: asmin
+[Sun Apr 13 15:29:11 2025] login successful: admin
+[Sun Apr 13 15:34:48 2025] Error information not entered
+[Sun Apr 13 15:35:02 2025] login error: admin
+[Sun Apr 13 15:39:20 2025] Error information not entered
+[Sun Apr 13 15:39:33 2025] login successful: admin
+[Sun Apr 13 15:39:52 2025] User added succesfully steven
+[Sun Apr 13 15:40:39 2025] login successful: steven
