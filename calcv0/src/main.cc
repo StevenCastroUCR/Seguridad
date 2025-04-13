@@ -104,7 +104,7 @@ string textParser()
     while (true)
     {
         bool skip = false;
-        cin.ignore();
+        //cin.ignore();
         string parsed;
         string inputToCheck;
         string input;
@@ -204,7 +204,7 @@ string textParser()
             }
         }
 
-        if (skip = true)
+        if (skip == true)
         {
             log("Non valid operation"+inputToCheck);
             continue;
@@ -214,18 +214,38 @@ string textParser()
         auto postfix = infixToPostfix(tokens);
         int result = evalPostfix(postfix);
         std::cout << "Resultado: " << result << std::endl;
-        int nextStep;
+        string nextStep;
      
-        std::cout << "Quiere hacer otra operacion?\n1-) Si , 2-) No\n " << std::endl;
-        cin >> nextStep;
+        //std::cout << "Quiere hacer otra operacion?\n1-) Si , 2-) No\n " << std::endl;
+        // cin >> nextStep;
         // std::cin.ignore();
-        if (nextStep == 1)
+        /*if (nextStep == 1)
         {
-            /* code */
+            // code 
         }
         else if (nextStep == 2)
         {
             break;
+        }*/
+
+
+        while (true)
+        {
+            cout<< "Quiere hacer otra operacion? 1-) Si , 2-) No:\n";
+            nextStep = readInput("");
+
+            if (stoi(nextStep) == 1)
+            {
+                break;
+            }
+            else if (stoi(nextStep) == 2)
+            {
+                return "";
+            }
+            else
+            {
+                std::cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
+            }
         }
     }
     return "";
