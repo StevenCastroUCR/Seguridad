@@ -2,6 +2,11 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <iostream>
+#include <map>
+#include <stack>
+#include <sstream>
+#include <cctype>
 #include <string>
 #include <vector>
 
@@ -9,6 +14,8 @@ class Calculator {
 public:
     
     std::string run();
+    Calculator();
+    ~Calculator();
 
 private:
    

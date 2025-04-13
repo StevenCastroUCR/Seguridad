@@ -96,7 +96,6 @@ void menu(bool isAdmin)
     }
 }
 
-// log("<MENSAJE DE EVENTO>");
 
 string textParser()
 {
