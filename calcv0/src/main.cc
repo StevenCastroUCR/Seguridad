@@ -17,19 +17,18 @@ int evalPostfix(const std::vector<std::string> &postfix);
 std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens);
 std::vector<std::string> tokenize(const std::string &expr);
 bool authentication(bool &isAdmin);
-string readInput(const string& prompt);
-void createUSer();
+string readInput(const string &prompt);
+void createUser();
 bool userExists(const string &userVerfication);
 string xorCipher(const string &input);
 void log(const string &event);
 
-//
 void xorEncrypt();
 
 int main()
 {
 
-    xorEncrypt();
+    // xorEncrypt();
 
     bool isAdmin = false;
 
@@ -43,7 +42,7 @@ int main()
 
 void menu(bool isAdmin)
 {
-    int option;
+    string option;
     while (true)
     {
         cout << "Laboratorio 01 de seguridad" << endl;
@@ -61,15 +60,14 @@ void menu(bool isAdmin)
             cout << "2. Salir" << endl;
         }
 
-        cout << "Digite una opcion: ";
-        cin >> option;
+        option = readInput("Digite una opcion: ");
 
         if (isAdmin)
         {
-            switch (option)
+            switch (stoi(option))
             {
             case 1:
-                createUSer();
+                createUser();
                 break;
             case 2:
                 textParser();
@@ -83,7 +81,7 @@ void menu(bool isAdmin)
         }
         else
         {
-            switch (option)
+            switch (stoi(option))
             {
             case 1:
                 textParser();
@@ -105,6 +103,7 @@ string textParser()
 
     while (true)
     {
+        bool skip = false;
         cin.ignore();
         string parsed;
         string inputToCheck;
@@ -120,18 +119,13 @@ string textParser()
         }
 
         map<string, int> unidades = {
-            {"uno", 1}, {"dos", 2}, {"tres", 3}, {"cuatro", 4}, {"cinco", 5}, {"seis", 6}, {"siete", 7}, 
-            {"ocho", 8}, {"nueve", 9}, {"diez", 10}};
+            {"uno", 1}, {"dos", 2}, {"tres", 3}, {"cuatro", 4}, {"cinco", 5}, {"seis", 6}, {"siete", 7}, {"ocho", 8}, {"nueve", 9}, {"diez", 10}};
 
         map<string, int> especiales = {
-            {"once", 11}, {"doce", 12}, {"trece", 13}, {"catorce", 14}, {"quince", 15}, {"dieciseis", 16},
-             {"diecisiete", 17}, {"dieciocho", 18}, {"diecinueve", 19}
-        ,{"veintiuno", 21}, {"veintidos", 22}, {"veintitres", 23}, {"veinticuatro", 24}, {"veinticinco", 25}, 
-        {"veintiseis", 26}, {"veintisiete", 27}, {"veintiocho", 28}, {"veintinueve", 29}};
+            {"once", 11}, {"doce", 12}, {"trece", 13}, {"catorce", 14}, {"quince", 15}, {"dieciseis", 16}, {"diecisiete", 17}, {"dieciocho", 18}, {"diecinueve", 19}, {"veintiuno", 21}, {"veintidos", 22}, {"veintitres", 23}, {"veinticuatro", 24}, {"veinticinco", 25}, {"veintiseis", 26}, {"veintisiete", 27}, {"veintiocho", 28}, {"veintinueve", 29}};
 
         map<string, int> decenas = {
-            {"veinte", 20}, {"treinta", 30}, {"cuarenta", 40}, {"cincuenta", 50}, {"sesenta", 60}, 
-            {"setenta", 70}, {"ochenta", 80}, {"noventa", 90}};
+            {"veinte", 20}, {"treinta", 30}, {"cuarenta", 40}, {"cincuenta", 50}, {"sesenta", 60}, {"setenta", 70}, {"ochenta", 80}, {"noventa", 90}};
 
         vector<size_t> operandPositions;
         for (size_t i = 0; i < input.size(); ++i)
@@ -189,12 +183,14 @@ string textParser()
                         }
                         else
                         {
-                            numero = "???";
+                            skip = true;
+                            break;
                         }
                     }
                     else
                     {
-                        numero = "???";
+                        skip = true;
+                        break;
                     }
                 }
                 parsed += numero;
@@ -208,15 +204,21 @@ string textParser()
             }
         }
 
-        cout << "Cadena parseada: " << parsed << endl;
+        if (skip = true)
+        {
+            log("Non valid operation"+inputToCheck);
+            continue;
+        }
+
         auto tokens = tokenize(parsed);
         auto postfix = infixToPostfix(tokens);
-        int resultado = evalPostfix(postfix);
-        std::cout << "Resultado: " << resultado << std::endl;
+        int result = evalPostfix(postfix);
+        std::cout << "Resultado: " << result << std::endl;
         int nextStep;
-        std::cout << "¿Quiere hacer otra operación?\n1-) Si , 2-) No\n " << std::endl;
+     
+        std::cout << "Quiere hacer otra operacion?\n1-) Si , 2-) No\n " << std::endl;
         cin >> nextStep;
-        std::cin.ignore();
+        // std::cin.ignore();
         if (nextStep == 1)
         {
             /* code */
@@ -266,7 +268,6 @@ std::vector<std::string> tokenize(const std::string &expr)
     if (!num.empty())
         tokens.push_back(num);
 
-   
     return tokens;
 }
 
@@ -312,7 +313,6 @@ std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens)
         output.push_back(ops.top());
         ops.pop();
     }
-
 
     return output;
 }
@@ -413,9 +413,11 @@ bool authentication(bool &isAdmin)
     return false;
 };
 
-string readInput(const string& prompt) {
+string readInput(const string &prompt)
+{
     string input;
-    while (true) {
+    while (true)
+    {
         cout << prompt;
         getline(cin, input);
 
@@ -423,22 +425,27 @@ string readInput(const string& prompt) {
         string word, leftover;
         iss >> word >> leftover;
 
-        if (word.empty()) {
+        if (word.empty())
+        {
             log("Error information not entered");
             cout << "Error no ha digitado.\n";
-        } else if (!leftover.empty()) {
+        }
+        else if (!leftover.empty())
+        {
             log("Error invalid input");
             cout << "La entrada no es valida intelo de nuevo\n";
-        } else {
+        }
+        else
+        {
             return word;
         }
     }
 }
 
-void createUSer()
+void createUser()
 {
     string idUser, pass;
-    int isAdmin;
+    string isAdmin;
     string line;
 
     while (true)
@@ -466,33 +473,36 @@ void createUSer()
         if (pass.length() > 20)
         {
             log("Error user creation, invalid password");
-            cout << "Contraseña excede longitud permitida\n";
+            cout << "Contrasena excede longitud permitida\n";
             continue;
         }
         string cpass;
-        cout << "Digite la contrasena nuevamente: ";
-        cin >> cpass;
+        cpass = readInput("Digite la contrasena nuevamente: ");
         if (!(pass == cpass))
         {
             log("Error user creation, password mismatch");
             cout << "Las contrasenas no coinciden\n";
+            continue;
         }
+        break;
     }
 
     while (true)
-        cout << "Es un usuario administrador ? 1-) Si , 2-) No :";
-    cin >> isAdmin;
-
-    switch (isAdmin)
     {
-    case 1:
-        line = "admin " + idUser + " " + pass;
-        break;
-    case 2:
-        line = idUser + " " + pass;
-        break;
-    default:
-        cout << "Opcion invalida\n";
+        isAdmin = readInput("Es un usuario administrador ? 1-) Si , 2-) No :");;
+
+        switch (stoi(isAdmin))
+        {
+        case 1:
+            line = "admin " + idUser + " " + pass;
+            break;
+        case 2:
+            line = idUser + " " + pass;
+            break;
+        default:
+            cout << "Opcion invalida\n";
+            continue;
+        }
         break;
     }
 
@@ -506,8 +516,8 @@ void createUSer()
     }
 
     usersFile.close();
-    log("User added succesfully" + idUser);
-    cout << "Usuario añadido correctamente";
+    log("User added succesfully " + idUser);
+    cout << "Usuario anadido correctamente\n";
 };
 
 bool userExists(const string &userVerfication)
