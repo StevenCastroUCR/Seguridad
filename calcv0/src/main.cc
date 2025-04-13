@@ -215,19 +215,6 @@ string textParser()
         int result = evalPostfix(postfix);
         std::cout << "Resultado: " << result << std::endl;
         string nextStep;
-     
-        //std::cout << "Quiere hacer otra operacion?\n1-) Si , 2-) No\n " << std::endl;
-        // cin >> nextStep;
-        // std::cin.ignore();
-        /*if (nextStep == 1)
-        {
-            // code 
-        }
-        else if (nextStep == 2)
-        {
-            break;
-        }*/
-
 
         while (true)
         {
@@ -528,7 +515,7 @@ void createUser()
 
     string encrypt = xorCipher(line);
 
-    ofstream usersFile("users.txt", ios::app); // append mode
+    ofstream usersFile("users.txt", ios::app | std::ios::binary);
     if (!usersFile)
     {
         cerr << "Error al acceder a archivo!" << endl;
@@ -547,6 +534,10 @@ bool userExists(const string &userVerfication)
 
     while (getline(usersFile, line))
     {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+
         string decryptedLine = xorCipher(line);
         istringstream iss(decryptedLine);
         string token;
