@@ -1,7 +1,9 @@
 #ifndef USERS_H
 #define USERS_H
 
-#include "Encryption.h"
+#include "../Repositories/IUsers.h"
+#include "../Encryption/Encryption.h"
+#include "Utility.h"
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -10,13 +12,11 @@
 #include <algorithm>
 #include <ctime>
 
-class Users : public Encryption {
-    void log(const std::string &event);
+class Users : public IUsers, public Encryption {
 public:
     Users();
     ~Users();
     bool authentication(bool &isAdmin);
-    std::string readInput(const std::string &prompt);
     void createUser();
 
 private:

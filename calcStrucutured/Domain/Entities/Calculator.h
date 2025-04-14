@@ -1,7 +1,7 @@
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
 
-#include "ICalculator.h"
+#include "../Repositories/ICalculator.h"
 #include <string>
 #include <vector>
 

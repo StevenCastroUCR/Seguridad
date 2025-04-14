@@ -7,6 +7,10 @@
 
 using namespace std;
 
+/// @brief Evalua una expresion en forma posfija y regresa el resultado,
+/// @param postfix Vector de strings que representa la expresion aritmetica
+///                 El string puede ser un entero o un operador
+/// @return Regresa el valor entero resultante de la expresion posfija
 int Calculator::evalPostfix(const vector<string>& postfix) {
     stack<int> evalStack;
 

@@ -29,6 +29,7 @@ else
 	$(MKDIR) obj
 endif
 
+
 bin:
 ifeq ($(OS),Windows_NT)
 	$(MKDIR) bin $(MKCMD) bin
