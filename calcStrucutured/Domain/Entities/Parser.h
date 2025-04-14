@@ -23,7 +23,7 @@ private:
     std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens);
 
     string inputToNumbers(const string& inputToCheck);
-    int evalPostfix(const std::vector<std::string>& postfix);
+    double evalPostfix(const std::vector<std::string>& postfix);
 
     bool opContinue();
 

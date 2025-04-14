@@ -19,7 +19,7 @@ string Parser::textParser()
         string input;
         cout << "Escriba la operacion:\n";
         getline(cin, input);
-        cout << "Resultado: " << input<< endl;
+     
         string inputToCheck;
         for (char c : input)
         {
@@ -34,10 +34,10 @@ string Parser::textParser()
         if (parsed.empty()) {
             continue;
         }
-        cout << "Resultado: " << parsed<< endl;
+
         auto tokens = tokenize(parsed);
         auto postfix = infixToPostfix(tokens);
-        int result = evalPostfix(postfix);
+        double result = evalPostfix(postfix);
         cout << "Resultado: " << result << endl;
   
 
@@ -53,7 +53,7 @@ string Parser::inputToNumbers(const string& input)
     bool skip =false;
     string parsed;
     vector<size_t> operandPositions;
-    cout << input<<endl;
+
     for (size_t i = 0; i < input.size(); ++i)
     {
         if ((input[i] == '+') || (input[i] == '-') || (input[i] == '*') || (input[i] == '/') ||
@@ -119,7 +119,7 @@ string Parser::inputToNumbers(const string& input)
                    // break;
                 }
             }
-            cout<< numero<<endl;
+         
             parsed += numero;
         }
 
@@ -130,7 +130,7 @@ string Parser::inputToNumbers(const string& input)
             start = operandPositions[i] + 1;
         }
     }
- cout  << "pasrsed"<<parsed << endl;
+
     return parsed;
 }
 
@@ -267,15 +267,15 @@ std::vector<std::string> Parser::infixToPostfix(const std::vector<std::string> &
 /// @param postfix Vector de strings que representa la expresion aritmetica
 ///                 El string puede ser un entero o un operador
 /// @return Regresa el valor entero resultante de la expresion posfija
-int Parser::evalPostfix(const vector<string>& postfix) {
-    stack<int> evalStack;
+double Parser::evalPostfix(const vector<string>& postfix) {
+    stack<double> evalStack;
 
     for (const string& token : postfix) {
         if (isdigit(token[0])) {
             evalStack.push(stoi(token));
         } else {
-            int b = evalStack.top(); evalStack.pop();
-            int a = evalStack.top(); evalStack.pop();
+            double b = evalStack.top(); evalStack.pop();
+            double a = evalStack.top(); evalStack.pop();
             if (token == "+") evalStack.push(a + b);
             else if (token == "-") evalStack.push(a - b);
             else if (token == "*") evalStack.push(a * b);
