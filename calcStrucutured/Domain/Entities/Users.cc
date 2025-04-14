@@ -28,8 +28,8 @@ bool Users::authentication(bool &isAdmin)
     {
         string idUser;
         string password;
-        idUser = readInput("Digite nombre usuario : ");
-        password = readInput("Digite la contrasena: ");
+        idUser = utility.readInput("Digite nombre usuario : ");
+        password = utility.readInput("Digite la contrasena: ");
 
         string line;
 
@@ -38,7 +38,9 @@ bool Users::authentication(bool &isAdmin)
 
         while (getline(usersFile, line))
         {
-            isAdmin = false;
+            if (!line.empty() && line.back() == '\r') {
+                line.pop_back();
+            }
             line = xorCipher(line);
             istringstream iss(line);
             string start, user, pass;
@@ -47,7 +49,6 @@ bool Users::authentication(bool &isAdmin)
             if (start == "admin")
             {
                 iss >> user >> pass;
-                isAdmin = true;
             }
             else
             {
@@ -57,13 +58,14 @@ bool Users::authentication(bool &isAdmin)
 
             if (idUser == user && password == pass)
             {
-                log("login successful: " + idUser);
+                isAdmin = (start == "admin");
+                utility.log("login successful: " + idUser);
                 cout << (isAdmin ? "Cuenta Administrador " : "")
                      << "Bienvenido: " << idUser << "!" << endl;
                 return true;
             }
         }
-        log("login error: " + idUser);
+        utility.log("login error: " + idUser);
         cout << "Error: usuario o contrasena invalidos" << endl;
         attempts++;
         if (attempts < maxAttempts)
@@ -85,16 +87,16 @@ void Users::createUser()
 
     while (true)
     {
-        idUser = readInput("Digite el nombre Usuario nuevo: ");
+        idUser = utility.readInput("Digite el nombre Usuario nuevo: ");
         if (idUser.length() > 20)
         {
-            log("Error user creation, invalid user name");
+            utility.log("Error user creation, invalid user name");
             cout << " Nombre de usuario excede la longitud permitida(20 caracteres).\n";
             continue;
         }
         if (userExists(idUser))
         {
-            log("Error user creation, user already in use");
+            utility.log("Error user creation, user already in use");
             cout << "Nombre de usuario ya existe\n";
             continue;
         }
@@ -104,18 +106,18 @@ void Users::createUser()
 
     while (true)
     {
-        pass = readInput("Digite la contrasena: ");
+        pass = utility.readInput("Digite la contrasena: ");
         if (pass.length() > 20)
         {
-            log("Error user creation, invalid password");
+            utility.log("Error user creation, invalid password");
             cout << "Contrasena excede longitud permitida\n";
             continue;
         }
         string cpass;
-        cpass = readInput("Digite la contrasena nuevamente: ");
+        cpass = utility.readInput("Digite la contrasena nuevamente: ");
         if (!(pass == cpass))
         {
-            log("Error user creation, password mismatch");
+            utility.log("Error user creation, password mismatch");
             cout << "Las contrasenas no coinciden\n";
             continue;
         }
@@ -124,7 +126,7 @@ void Users::createUser()
 
     while (true)
     {
-        isAdmin = readInput("Es un usuario administrador ? 1-) Si , 2-) No: \n");;
+        isAdmin = utility.readInput("Es un usuario administrador ? 1-) Si , 2-) No: \n");;
 
         switch (stoi(isAdmin))
         {
@@ -151,7 +153,7 @@ void Users::createUser()
     }
     usersFile << encrypt << endl; 
     usersFile.close();
-    log("User added succesfully " + idUser);
+    utility.log("User added succesfully " + idUser);
     cout << "Usuario anadido correctamente\n";
 };
 

@@ -14,6 +14,7 @@
 
 class Users : public IUsers, public Encryption {
 public:
+Utility utility;
     Users();
     ~Users();
     bool authentication(bool &isAdmin);

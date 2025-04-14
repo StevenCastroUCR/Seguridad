@@ -10,7 +10,7 @@ public:
     virtual ~IParser() = default;
 
     // Pure virtual method to be implemented by derived classes
-    virtual std::string textParser(std::string inputTocheck) = 0;
+    virtual std::string textParser() = 0;
 };
 
 #endif // IPARSER_H

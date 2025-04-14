@@ -3,21 +3,6 @@
 
 using namespace std;
 
-map<string, int> unidades = {
-    {"uno", 1}, {"dos", 2}, {"tres", 3}, {"cuatro", 4}, {"cinco", 5},
-    {"seis", 6}, {"siete", 7}, {"ocho", 8}, {"nueve", 9}, {"diez", 10}};
-
-map<string, int> especiales = {
-    {"once", 11}, {"doce", 12}, {"trece", 13}, {"catorce", 14},
-    {"quince", 15}, {"dieciseis", 16}, {"diecisiete", 17},
-    {"dieciocho", 18}, {"diecinueve", 19}, {"veintiuno", 21},
-    {"veintidos", 22}, {"veintitres", 23}, {"veinticuatro", 24},
-    {"veinticinco", 25}, {"veintiseis", 26}, {"veintisiete", 27},
-    {"veintiocho", 28}, {"veintinueve", 29}};
-
-map<string, int> decenas = {
-    {"veinte", 20}, {"treinta", 30}, {"cuarenta", 40}, {"cincuenta", 50},
-    {"sesenta", 60}, {"setenta", 70}, {"ochenta", 80}, {"noventa", 90}};
 
 
 Parser::Parser()
@@ -34,55 +19,109 @@ string Parser::textParser()
         string input;
         cout << "Escriba la operacion:\n";
         getline(cin, input);
-        
-        string parsed = inputToNumbers(input);
+        cout << "Resultado: " << input<< endl;
+        string inputToCheck;
+        for (char c : input)
+        {
+            if (c != ' ')
+            {
+                inputToCheck += std::tolower(c);
+            }
+        }
+        string parsed = inputToNumbers(inputToCheck);
+
+
         if (parsed.empty()) {
             continue;
         }
-
+        cout << "Resultado: " << parsed<< endl;
         auto tokens = tokenize(parsed);
         auto postfix = infixToPostfix(tokens);
+        int result = evalPostfix(postfix);
+        cout << "Resultado: " << result << endl;
   
-        string nextStep;
 
-        if (!opContinue) {
+        if (!opContinue()) {
             return "";
         }        
     }
     return "";
 }
 
-string Parser::inputToNumbers(const string& inputToCheck)
+string Parser::inputToNumbers(const string& input)
 {
-    string input = "";
-    bool skip = false;
-    for (char c : inputToCheck)
+    bool skip =false;
+    string parsed;
+    vector<size_t> operandPositions;
+    cout << input<<endl;
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        if (c != ' ')
+        if ((input[i] == '+') || (input[i] == '-') || (input[i] == '*') || (input[i] == '/') ||
+            (input[i] == '(') || (input[i] == ')'))
         {
-            input += tolower(c);
+            operandPositions.push_back(i);
         }
     }
 
-    vector<size_t> operandPositions = getOperandPositions(input);
-    
     size_t start = 0;
-    string parsed;
 
     for (size_t i = 0; i <= operandPositions.size(); ++i)
     {
         size_t end = (i < operandPositions.size()) ? operandPositions[i] : input.size();
         string palabra = input.substr(start, end - start);
 
-        string numero =  parseOperand(palabra);
-        if (!numero.empty())
+        string numero;
+        if (!palabra.empty())
         {
-            
-            skip = true;
-            break;
-        }
+            if (especiales.count(palabra))
+            {
+                numero = to_string(especiales[palabra]);
+            }
+            else if (decenas.count(palabra))
+            {
+                numero = to_string(decenas[palabra]);
+            }
+            else if (unidades.count(palabra))
+            {
+                numero = to_string(unidades[palabra]);
+            }
+            else
+            {
+                size_t y_pos = palabra.find("y");
+                if (y_pos != string::npos)
+                {
+                    string parte1 = palabra.substr(0, y_pos);
+                    string parte2 = palabra.substr(y_pos + 1);
 
-        parsed += numero;
+                    int valor1 = 0, valor2 = 0;
+                    if (decenas.count(parte1))
+                    {
+                        valor1 = decenas[parte1];
+                    }
+                    if (unidades.count(parte2))
+                    {
+                        valor2 = unidades[parte2];
+                    }
+
+                    if (valor1 > 0 && valor2 > 0)
+                    {
+                        numero = to_string(valor1 + valor2);
+                    }
+                    else
+                    {
+                       // skip = true;
+                        //break;
+                    }
+                }
+                else
+                {
+                  //  skip = true;
+                   // break;
+                }
+            }
+            cout<< numero<<endl;
+            parsed += numero;
+        }
 
         if (i < operandPositions.size())
         {
@@ -91,93 +130,36 @@ string Parser::inputToNumbers(const string& inputToCheck)
             start = operandPositions[i] + 1;
         }
     }
-    return skip ? "" : parsed;
+ cout  << "pasrsed"<<parsed << endl;
+    return parsed;
 }
 
-string Parser::parseOperand(const string& palabra)
-{
-    string numero;
-
-    if (especiales.count(palabra))
-    {
-        numero = to_string(especiales[palabra]);
-    }
-    else if (decenas.count(palabra))
-    {
-        numero = to_string(decenas[palabra]);
-    }
-    else if (unidades.count(palabra))
-    {
-        numero = to_string(unidades[palabra]);
-    }
-    else
-    {
-        size_t y_pos = palabra.find("y");
-        if (y_pos != string::npos)
-        {
-            string parte1 = palabra.substr(0, y_pos);
-            string parte2 = palabra.substr(y_pos + 1);
-
-            int valor1 = 0, valor2 = 0;
-            if (decenas.count(parte1))
-            {
-                valor1 = decenas[parte1];
-            }
-            if (unidades.count(parte2))
-            {
-                valor2 = unidades[parte2];
-            }
-
-            if (valor1 > 0 && valor2 > 0)
-            {
-                numero = to_string(valor1 + valor2);
-            }
-            else
-            {
-                return "";
-            }
-        }
-        else
-        {
-            return "";
-        }
-    }
-}
-
-vector<size_t> Parser::getOperandPositions(const string& input)
-{
-    vector<size_t> positions;
-    for (size_t i = 0; i < input.size(); ++i)
-    {
-        if ((input[i] == '+') || (input[i] == '-') || (input[i] == '*')
-            || (input[i] == '/') || (input[i] == '(') || (input[i] == ')'))
-        {
-            positions.push_back(i);
-        }
-    }
-    return positions;  
-}
 
 bool Parser::opContinue() {
     string nextStep;
     while (true)
-        {
-            cout<< "Quiere hacer otra operacion? 1-) Si , 2-) No:\n";
-            getline(cin, nextStep);
+    {
+        cout<< "Quiere hacer otra operacion? 1-) Si , 2-) No: \n";
+        nextStep = utility.readInput("");
 
-            if (stoi(nextStep) == 1)
+        try {
+            int option = stoi(nextStep);
+            if (option == 1)
             {
-                break;
+                return true;
             }
-            else if (stoi(nextStep) == 2)
+            else if (option == 2)
             {
-                return "";
+                return false;
             }
             else
             {
-                std::cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
+                cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
             }
+        } catch (const std::exception& e) {
+            cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
         }
+    }
 }
 
 /// @brief Regresa el precedente de cualquier operador indicando el nivel de
@@ -278,4 +260,28 @@ std::vector<std::string> Parser::infixToPostfix(const std::vector<std::string> &
     }
 
     return output;
+}
+
+
+/// @brief Evalua una expresion en forma posfija y regresa el resultado,
+/// @param postfix Vector de strings que representa la expresion aritmetica
+///                 El string puede ser un entero o un operador
+/// @return Regresa el valor entero resultante de la expresion posfija
+int Parser::evalPostfix(const vector<string>& postfix) {
+    stack<int> evalStack;
+
+    for (const string& token : postfix) {
+        if (isdigit(token[0])) {
+            evalStack.push(stoi(token));
+        } else {
+            int b = evalStack.top(); evalStack.pop();
+            int a = evalStack.top(); evalStack.pop();
+            if (token == "+") evalStack.push(a + b);
+            else if (token == "-") evalStack.push(a - b);
+            else if (token == "*") evalStack.push(a * b);
+            else if (token == "/") evalStack.push(a / b);
+        }
+    }
+
+    return evalStack.top();
 }

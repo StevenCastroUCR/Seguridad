@@ -1,22 +1,24 @@
 #include "Controller.h"
-#include "../Entities/Users.h"
 #include <iostream>
 
-void menu(bool isAdmin, Users user);
+
+Controller::Controller(IUsers* user, IParser* parser, ICalculator* calculator, IUtility* utility)
+    : user(user), parser(parser), calculator(calculator), utility(utility) {}
+   
+
 
 int Controller::run() {
-    Users user;
     bool isAdmin = false;
 
-    if (!user.authentication(isAdmin)) {
+    if (!user->authentication(isAdmin)) {
         return 1;
     }
 
-    menu(isAdmin, user);
+    Menu(isAdmin);
     return 0;
 }
 
-void menu(bool isAdmin, Users user) {
+void Controller:: Menu(bool isAdmin) {
     std::string option;
     while (true) {
         std::cout << "Laboratorio 01 de seguridad\nCalculadora texto\n\n";
@@ -27,17 +29,18 @@ void menu(bool isAdmin, Users user) {
             std::cout << "1. Calcular de Texto\n2. Salir\n";
         }
 
-        option = user.readInput("Digite una opcion: ");
+        option = utility->readInput("Digite una opcion: ");
 
         try {
             int op = std::stoi(option);
             if (isAdmin) {
                 switch (op) {
                     case 1:
-                        user.createUser();
+                        user->createUser();
                         break;
                     case 2:
-                        textParser();
+                    this->parser->textParser();
+
                         break;
                     case 3:
                         return;
@@ -48,7 +51,7 @@ void menu(bool isAdmin, Users user) {
             } else {
                 switch (op) {
                     case 1:
-                        textParser();
+                        this->parser->textParser();
                         break;
                     case 2:
                         return;
@@ -58,7 +61,7 @@ void menu(bool isAdmin, Users user) {
                 }
             }
         } catch (...) {
-            std::cout << "Entrada no válida, intente de nuevo.\n";
+            std::cout << "Entrada no valida, intente de nuevo.\n";
         }
     }
 }

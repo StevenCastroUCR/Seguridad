@@ -1,7 +1,16 @@
 #include "Utility.h"
 #include <iostream>
+#include <string.h>
 
-string readInput(const string &prompt)
+
+Utility::Utility()
+{
+}
+Utility::~Utility()
+{
+}
+
+string Utility:: readInput(const string &prompt)
 {
     string input;
     while (true)
@@ -30,7 +39,7 @@ string readInput(const string &prompt)
     }
 }
 
-void log(const string &event)
+void Utility:: log(const string &event)
 {
     ofstream logFile("log.txt", ios::app);
     if (!logFile)
