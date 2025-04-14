@@ -10,8 +10,10 @@ Parser::Parser()
 
 }
 
-/// @brief 
-/// @return 
+/// @brief Procesa una operacion matematica escrita en palabras, convierte las palabras a numeros,
+///        realiza la operacion y muestra el resultado.
+///        El ciclo se repite mientras el usuario desee continuar.
+/// @return Una cadena vacía despues de terminar las operaciones.
 string Parser::textParser()
 {
     while (true)
@@ -48,6 +50,10 @@ string Parser::textParser()
     return "";
 }
 
+/// @brief Convierte una cadena de entrada con numeros en forma de palabra 
+///        en una expresion matematica con numeros y operadores aritmeticos.
+/// @param input Cadena de texto que contiene una operacion matematica con numeros escritos en palabras.
+/// @return Cadena convertida que contiene numeros y operadores listos para ser evaluados.
 string Parser::inputToNumbers(const string& input)
 {
     bool skip =false;
@@ -134,7 +140,8 @@ string Parser::inputToNumbers(const string& input)
     return parsed;
 }
 
-
+/// @brief Pregunta al usuario si desea realizar otra operacion.
+/// @return `true` si el usuario desea continuar, `false` si desea salir.
 bool Parser::opContinue() {
     string nextStep;
     while (true)
@@ -240,7 +247,7 @@ std::vector<std::string> Parser::infixToPostfix(const std::vector<std::string> &
             }
             if (!ops.empty() && ops.top() == "(")
             {
-                ops.pop(); // quitar el paréntesis izquierdo
+                ops.pop(); // quitar el parentesis izquierdo
             }
         }
         else

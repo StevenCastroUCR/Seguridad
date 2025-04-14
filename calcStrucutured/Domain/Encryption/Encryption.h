@@ -12,11 +12,12 @@
 #include <stack>
 #include <ctime>
 
+using namespace std;
 class Encryption {
  private:
     void encrypt();
  protected:
-    std::string xorCipher(const std::string &input);
+    string xorCipher(const string &input);
 };
 
 #endif 

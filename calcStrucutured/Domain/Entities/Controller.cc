@@ -6,7 +6,9 @@ Controller::Controller(IUsers* user, IParser* parser, ICalculator* calculator, I
     : user(user), parser(parser), calculator(calculator), utility(utility) {}
    
 
-
+/// @brief Ejecuta el programa principal del controlador. Realiza la autenticacion del usuario
+///        y posteriormente despliega el menu principal segun el tipo de usuario (administrador o regular).
+/// @return Retorna 0 si el programa se ejecuta correctamente, 1 si falla la autenticacion.
 int Controller::run() {
     bool isAdmin = false;
 
@@ -18,6 +20,9 @@ int Controller::run() {
     return 0;
 }
 
+/// @brief Muestra el menu principal del sistema dependiendo del tipo de usuario.
+///        Si el usuario es administrador, se habilita la opcion de crear nuevos usuarios.
+/// @param isAdmin Valor booleano que indica si el usuario autenticado tiene privilegios de administrador.
 void Controller:: Menu(bool isAdmin) {
     std::string option;
     while (true) {

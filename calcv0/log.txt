@@ -90,3 +90,7 @@
 [Sun Apr 13 21:46:43 2025] User added succesfully villa
 [Sun Apr 13 21:47:05 2025] login successful: villa
 [Sun Apr 13 15:49:34 2025] login successful: villa
+[Mon Apr 14 07:04:51 2025] login successful: admin
+[Mon Apr 14 07:05:01 2025] User added succesfully juan
+[Mon Apr 14 07:05:22 2025] Non valid operationcinceunta+veinte *treinta y dos
+[Mon Apr 14 07:05:53 2025] login successful: juan

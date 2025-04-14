@@ -11,6 +11,11 @@ Users::~Users()
 
 }
 
+/// @brief Realiza la autenticacion del usuario pidiendo nombre y contrasena.
+///        El usuario tiene hasta 3 intentos para ingresar correctamente.
+///        Si el login es exitoso, se indica si es administrador.
+/// @param isAdmin Referencia booleana que se actualiza a true si el usuario es admin.
+/// @return true si la autenticacion fue exitosa, false en caso contrario.
 bool Users::authentication(bool &isAdmin)
 {
     int attempts = 0;
@@ -78,7 +83,9 @@ bool Users::authentication(bool &isAdmin)
     return false;
 };
 
-
+/// @brief Crea un nuevo usuario solicitando nombre, contrasena y rol (admin o no).
+///        Verifica si el usuario ya existe y valida que la contrasena se escriba dos veces.
+///        Encripta los datos y los guarda en el archivo users.txt.
 void Users::createUser()
 {
     string idUser, pass;
@@ -157,6 +164,9 @@ void Users::createUser()
     cout << "Usuario anadido correctamente\n";
 };
 
+/// @brief Verifica si un nombre de usuario ya existe en el archivo users.txt.
+/// @param userVerfication Nombre del usuario a verificar.
+/// @return true si el usuario ya existe, false si no.
 bool Users::userExists(const string &userVerfication)
 {
     ifstream usersFile("users.txt");
