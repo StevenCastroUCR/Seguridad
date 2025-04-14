@@ -1,12 +1,12 @@
 # Calculadora con operandos en texto (Borrador 1)
 
 ###
-- **Universidad de CostaRica**
-- **Seguridad de Sistemas Computacionales**
-- **CI0143 - I Semestre 2025**
-- **Steven Castro Oreamuno**
-- **Rafa Isaac Gutiérrez Ramírez C03640**
-- **I-2025**
+**Universidad de CostaRica**
+**Seguridad de Sistemas Computacionales**
+**CI0143 - I Semestre 2025**
+**Steven Castro Oreamuno**
+**Rafa Isaac Gutiérrez Ramírez C03640**
+**I-2025**
 
 ---
 
@@ -66,26 +66,26 @@ Una vez compilado se debe correr con el comando
 ### Version Plana
 - El programa y sus funciones se ubican en la clase main.cc
 - Funciones: 
-- - void menu(bool isAdmin);
-- - string textParser();
-- - int precedence(const std::string &op);
-- - int evalPostfix(const std::vector<std::string> &postfix);
-- - std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens);
-- - std::vector<std::string> tokenize(const std::string &expr);
-- - bool authentication(bool &isAdmin);
-- - string readInput(const string &prompt);
-- - void createUser();
-- - bool userExists(const string &userVerfication);
-- - string xorCipher(const string &input);
-- - void log(const string &event);
+- void menu(bool isAdmin);
+- string textParser();
+- int precedence(const std::string &op);
+- int evalPostfix(const std::vector<std::string> &postfix);
+- std::vector<std::string> infixToPostfix(const std::vector<std::string> &tokens);
+- std::vector<std::string> tokenize(const std::string &expr);
+- bool authentication(bool &isAdmin);
+- string readInput(const string &prompt);
+- void createUser();
+- bool userExists(const string &userVerfication);
+- string xorCipher(const string &input);
+- void log(const string &event);
 
 ### Version estructurada
-- Modelo: Clase Parser y User manejan la logica de calculadora y de usuarios
-- Vista: El usuario introduce sus consultas y es dirigido mediante menus y opciones
-- Controlador: La clase Controller maneja el flujo de la ejecucion
+- **Modelo:** Clase Parser y User manejan la logica de calculadora y de usuarios
+- **Vista:** El usuario introduce sus consultas y es dirigido mediante menus y opciones
+- **Controlador:** La clase Controller maneja el flujo de la ejecucion
 
 #### Clases
-- Parser: 
+- **Parser:** 
 * int precedence(const std::string &op);
     Funcion encargada de ver el orden de precedencia
 * std::vector<std::string> tokenize(const std::string &expr);
@@ -98,24 +98,24 @@ Una vez compilado se debe correr con el comando
     Funcion que calcula el resultado desde la notacion posfija
 * bool opContinue();
     Funcion que le pregunta al usuario si desesa continuar
-- User: 
+- **User:** 
 * bool authentication(bool &isAdmin);
     Funcion encargada de autenticar a los usuraios desde un documento de texto
 * void createUser();
     Funcion encargada de crear un usuario
 * bool userExists(const std::string &userVerfication);
     Funcion que verifica si el usuario existe
-- Encryption:
+- **Encryption:**
 * void encrypt();
     Funcion que encripta valores usando el cifrado XOR
 * string xorCipher(const string &input);
     Funcion de cifrado XOR
-- Controller: 
+- **Controller:**
 * int run();
     Funcion encargada de la ejecucion del programa
 * void Menu(bool isAdmin);
     Funcion que despliega menu de opciones a los usuarios
-- Utility:
+- **Utility:**
 * string readInput(const string &prompt);
     Funcion de lectura de entradas de los usuarios
 * void log(const string &event);
@@ -200,5 +200,3 @@ Crea nuevo usuario
 
 ![Imagen 2](images/testStructured/image2.png)  
 Realiza calculo
-
-
