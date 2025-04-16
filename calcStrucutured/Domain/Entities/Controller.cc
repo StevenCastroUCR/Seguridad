@@ -12,11 +12,13 @@ Controller::Controller(IUsers* user, IParser* parser, ICalculator* calculator, I
 int Controller::run() {
     bool isAdmin = false;
 
-    if (!user->authentication(isAdmin)) {
-        return 1;
-    }
+    while (true) {
+        if (!user->authentication(isAdmin)) {
+            return 1;
+        }
 
-    Menu(isAdmin);
+        Menu(isAdmin);
+    }
     return 0;
 }
 
@@ -29,9 +31,9 @@ void Controller:: Menu(bool isAdmin) {
         std::cout << "Laboratorio 01 de seguridad\nCalculadora texto\n\n";
 
         if (isAdmin) {
-            std::cout << "1. Crear usuario\n2. Calcular de Texto\n3. Salir\n";
+            std::cout << "1. Crear usuario\n2. Calcular de Texto\n3. Cerrar Sesion\n4. Salir\n";
         } else {
-            std::cout << "1. Calcular de Texto\n2. Salir\n";
+            std::cout << "1. Calcular de Texto\n2. Cerrar Sesion\n3. Salir\n";
         }
 
         option = utility->readInput("Digite una opcion: ", 1);
@@ -44,14 +46,16 @@ void Controller:: Menu(bool isAdmin) {
                         user->createUser();
                         break;
                     case 2:
-                    this->parser->textParser();
-
+                        this->parser->textParser();
                         break;
                     case 3:
+                        std::cout << "Cerrando Sesion.\n";
                         return;
+                    case 4:
+                        exit(0);
                     default:
                         std::cout << "Opcion invalida\n";
-                        break;
+                        continue;
                 }
             } else {
                 switch (op) {
@@ -59,10 +63,13 @@ void Controller:: Menu(bool isAdmin) {
                         this->parser->textParser();
                         break;
                     case 2:
+                        std::cout << "Cerrando Sesion.\n";
                         return;
+                    case 3:
+                        exit(0);
                     default:
                         std::cout << "Opcion invalida\n";
-                        break;
+                        continue;
                 }
             }
         } catch (...) {

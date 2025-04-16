@@ -49,3 +49,6 @@
 [Wed Apr 16 01:40:17 2025] login successful: admin
 [Wed Apr 16 01:40:20 2025] Error: Input exceeds maximum length
 [Wed Apr 16 01:40:32 2025] Error: Input exceeds maximum length
+[Wed Apr 16 02:03:30 2025] Error: Information not entered
+[Wed Apr 16 02:03:53 2025] login successful: admin
+[Wed Apr 16 02:04:20 2025] login successful: admin
