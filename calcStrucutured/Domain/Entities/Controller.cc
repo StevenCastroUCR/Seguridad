@@ -34,7 +34,7 @@ void Controller:: Menu(bool isAdmin) {
             std::cout << "1. Calcular de Texto\n2. Salir\n";
         }
 
-        option = utility->readInput("Digite una opcion: ");
+        option = utility->readInput("Digite una opcion: ", 1);
 
         try {
             int op = std::stoi(option);

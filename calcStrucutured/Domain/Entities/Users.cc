@@ -31,13 +31,13 @@ bool Users::authentication(bool &isAdmin)
 
     while (attempts < maxAttempts)
     {
-        string idUser = utility.readInput("Digite nombre usuario : ");
+        string idUser = utility.readInput("Digite nombre usuario : ", 20);
         if (!userExists(idUser )) {
             cout << "Error: El usuario no existe" << endl;
             continue;
         }
 
-        string password = utility.readInput("Digite la contrasena: ");
+        string password = utility.readInput("Digite la contrasena: ", 20);
         
         usersFile.clear();
         usersFile.seekg(0, ios::beg);
@@ -78,13 +78,7 @@ void Users::createUser()
 
     while (true)
     {
-        idUser = utility.readInput("Digite el nombre Usuario nuevo: ");
-        if (idUser.length() > 20)
-        {
-            utility.log("Error user creation, invalid user name");
-            cout << " Nombre de usuario excede la longitud permitida(20 caracteres).\n";
-            continue;
-        }
+        idUser = utility.readInput("Digite el nombre Usuario nuevo: ", 20);
         if (userExists(idUser))
         {
             utility.log("Error user creation, user already in use");
@@ -97,15 +91,9 @@ void Users::createUser()
 
     while (true)
     {
-        pass = utility.readInput("Digite la contrasena: ");
-        if (pass.length() > 20)
-        {
-            utility.log("Error user creation, invalid password");
-            cout << "Contrasena excede longitud permitida\n";
-            continue;
-        }
+        pass = utility.readInput("Digite la contrasena: ", 20);
         string cpass;
-        cpass = utility.readInput("Digite la contrasena nuevamente: ");
+        cpass = utility.readInput("Digite la contrasena nuevamente: ", 20);
         if (!(pass == cpass))
         {
             utility.log("Error user creation, password mismatch");
@@ -117,7 +105,7 @@ void Users::createUser()
 
     while (true)
     {
-        isAdmin = utility.readInput("Es un usuario administrador ? 1-) Si , 2-) No: \n");;
+        isAdmin = utility.readInput("Es un usuario administrador ? 1-) Si , 2-) No: \n", 1);;
 
         switch (stoi(isAdmin))
         {

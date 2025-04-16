@@ -15,7 +15,7 @@ Utility::~Utility()
 ///        En caso de error, registra el evento en un log y solicita la entrada nuevamente.
 /// @param prompt Mensaje que se muestra al usuario antes de ingresar el dato.
 /// @return La palabra ingresada por el usuario.
-string Utility:: readInput(const string &prompt)
+string Utility:: readInput(const string &prompt, size_t maxLength)
 {
     string input;
     while (true)
@@ -23,23 +23,30 @@ string Utility:: readInput(const string &prompt)
         cout << prompt;
         getline(cin, input);
 
-        istringstream iss(input);
-        string word, leftover;
-        iss >> word >> leftover;
+        if (input.length() > maxLength) {
+            log("Error: Input exceeds maximum length");
+            std::cout << "Error: La entrada excede el limite de " << maxLength << " caracteres. Intente de nuevo.\n";
+            continue;
+        }
 
-        if (word.empty())
-        {
-            log("Error information not entered");
-            cout << "Error no ha digitado.\n";
-        }
-        else if (!leftover.empty())
-        {
-            log("Error invalid input");
-            cout << "La entrada no es valida intelo de nuevo\n";
-        }
-        else
-        {
-            return word;
+        string sanitizedInput = sanitizeInput(input);
+        if (sanitizedInput.empty()) {
+            log("Error: Information not entered");
+            std::cout << "Error: No ha digitado.\n";
+        } else {
+            istringstream iss(sanitizedInput);
+            string word, leftover;
+            iss >> word >> leftover;
+
+            if (!leftover.empty())
+            {
+                log("Error invalid input");
+                cout << "La entrada no es valida intelo de nuevo\n";
+            }
+            else
+            {
+                return word;
+            }
         }
     }
 }
@@ -64,4 +71,17 @@ void Utility:: log(const string &event)
     }
 
     logFile << "[" << dt << "] " << event << endl;
+}
+
+
+string Utility::sanitizeInput(const std::string &input) {
+    std::string sanitized;
+    for (char c : input) {
+        //  Permite alfanumerico y ciertos simbolos
+        if (std::isalnum(c) || c == '_' || c == '-') {
+            sanitized += c;
+        }
+        // TODO: Añadir condiciones
+    }
+    return sanitized;
 }

@@ -147,7 +147,7 @@ bool Parser::opContinue() {
     while (true)
     {
         cout<< "Quiere hacer otra operacion? 1-) Si , 2-) No: \n";
-        nextStep = utility.readInput("");
+        nextStep = utility.readInput("", 1);
 
         try {
             int option = stoi(nextStep);

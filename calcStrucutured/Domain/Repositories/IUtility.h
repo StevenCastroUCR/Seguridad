@@ -8,7 +8,7 @@ public:
     virtual ~IUtility() = default;
 
     // Pure virtual function to read input from the user with validation
-    virtual std::string readInput(const std::string &prompt) = 0;
+    virtual std::string readInput(const std::string &prompt, size_t maxLength) = 0;
 
     // Pure virtual function to log events to a file
     virtual void log(const std::string &event) = 0;
