@@ -31,36 +31,20 @@ bool Users::authentication(bool &isAdmin)
 
     while (attempts < maxAttempts)
     {
-        string idUser;
-        string password;
-        idUser = utility.readInput("Digite nombre usuario : ");
-        password = utility.readInput("Digite la contrasena: ");
+        string idUser = utility.readInput("Digite nombre usuario : ");
+        if (!userExists(idUser )) {
+            cout << "Error: El usuario no existe" << endl;
+            continue;
+        }
 
-        string line;
-
+        string password = utility.readInput("Digite la contrasena: ");
+        
         usersFile.clear();
         usersFile.seekg(0, ios::beg);
-
-        while (getline(usersFile, line))
+        
+        string start, user, pass;
+        while (getUserData(usersFile, start, user, pass))
         {
-            if (!line.empty() && line.back() == '\r') {
-                line.pop_back();
-            }
-            line = xorCipher(line);
-            istringstream iss(line);
-            string start, user, pass;
-            iss >> start;
-
-            if (start == "admin")
-            {
-                iss >> user >> pass;
-            }
-            else
-            {
-                user = start;
-                iss >> pass;
-            }
-
             if (idUser == user && password == pass)
             {
                 isAdmin = (start == "admin");
@@ -170,30 +154,43 @@ void Users::createUser()
 bool Users::userExists(const string &userVerfication)
 {
     ifstream usersFile("users.txt");
-    string line;
+    string start, user, pass;
 
-    while (getline(usersFile, line))
+    while (getUserData(usersFile, start, user, pass))
     {
-        if (!line.empty() && line.back() == '\r') {
-            line.pop_back();
-        }
-
-        string decryptedLine = xorCipher(line);
-        istringstream iss(decryptedLine);
-        string token;
-
-        if (decryptedLine.find("admin") == 0)
-        {
-            iss >> token;
-        }
-
-        string existingLabel1;
-        iss >> existingLabel1;
-
-        if (existingLabel1 == userVerfication)
+        if (user == userVerfication)
         {
             return true;
         }
+    }
+    return false;
+}
+
+/// @brief Obtiene los datos del usuario desde el archivo texto para verificar 
+///         los pares de contraseña y tipo de usuario (admin, regular)
+/// @param usersFile Archivo a leer
+/// @param userType Tipo de usuario(regular, admin)
+/// @param user Dato de usuario a verificar
+/// @param pass Dato de contrasena a verificar
+/// @return Regresa verdadero si la informacion concuerda con la introducida
+bool Users::getUserData(ifstream &usersFile, string &userType, string &user, string &pass) {
+    string line;
+    while (getline(usersFile, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        line = xorCipher(line);
+        istringstream iss(line);
+        iss >> userType;
+
+        if (userType == "admin") {
+            iss >> user >> pass;
+        } else {
+            user = userType;
+            iss >> pass;
+        }
+
+        return true;
     }
     return false;
 }

@@ -22,7 +22,7 @@ Utility utility;
 
 private:
     bool userExists(const std::string &userVerfication);
-    
+    bool getUserData(ifstream &usersFile, string &userType, string &user, string &pass);
 };
 
 #endif // USERS_H

@@ -34,3 +34,11 @@
 [Mon Apr 14 05:49:42 2025] login successful: Rafa
 [Mon Apr 14 05:50:17 2025] login successful: Rafa
 [Mon Apr 14 05:51:52 2025] Error information not entered
+[Tue Apr 15 23:55:21 2025] login successful: admin
+[Tue Apr 15 23:55:36 2025] Error user creation, user already in use
+[Tue Apr 15 23:55:44 2025] Error information not entered
+[Tue Apr 15 23:55:55 2025] login error: face
+[Wed Apr 16 00:24:04 2025] Error information not entered
+[Wed Apr 16 00:54:13 2025] login successful: admin
+[Wed Apr 16 00:54:21 2025] Error user creation, user already in use
+[Wed Apr 16 00:54:24 2025] Error information not entered
