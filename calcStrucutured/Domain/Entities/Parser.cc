@@ -31,17 +31,36 @@ string Parser::textParser()
             }
         }
         string parsed = inputToNumbers(inputToCheck);
+        cout << "Cadena parseada: " << parsed << endl;
+
+        
+        bool validInput = true;
+        for (char c : parsed) {
+            if (!isdigit(c) && c != '+' && c != '-' && c != '*' && c != '/' && c != '(' && c != ')') {
+                cout << "Error: La entrada contiene caracteres no válidos." << endl;
+                validInput = false;
+                break;
+            }
+        }
+
+        if (!validInput || parsed.empty()) {
+            cout << "Por favor, ingrese una operación válida.\n";
+            continue;
+        }
 
 
         if (parsed.empty()) {
             continue;
         }
+        try {
+            auto tokens = tokenize(parsed);
 
-        auto tokens = tokenize(parsed);
-        auto postfix = infixToPostfix(tokens);
-        double result = evalPostfix(postfix);
-        cout << "Resultado: " << result << endl;
-  
+            auto postfix = infixToPostfix(tokens);
+            double result = evalPostfix(postfix);
+            cout << "Resultado: " << result << endl;
+        } catch (const std::exception& e) {
+            cout << "Error al procesar la operación: " << e.what() << endl;
+        }
 
         if (!opContinue()) {
             return "";
