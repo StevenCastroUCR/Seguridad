@@ -7,7 +7,7 @@ using namespace std;
 
 Parser::Parser()
 {
-
+   
 }
 
 /// @brief Procesa una operacion matematica escrita en palabras, convierte las palabras a numeros,
@@ -31,7 +31,7 @@ string Parser::textParser()
             }
         }
         string parsed = inputToNumbers(inputToCheck);
-        cout << "Cadena parseada: " << parsed << endl;
+  
 
         
         bool validInput = true;
@@ -136,12 +136,14 @@ string Parser::inputToNumbers(const string& input)
                     {
                        // skip = true;
                         //break;
+                        parsed ="~";
                     }
                 }
                 else
                 {
                   //  skip = true;
                    // break;
+                   parsed ="~";
                 }
             }
          
