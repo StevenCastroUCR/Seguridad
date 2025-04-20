@@ -1,8 +1,8 @@
 # Calculadora con operandos en texto (Borrador 1)
 
 ###
-**Universidad de CostaRica**
-**Seguridad de Sistemas Computacionales**
+<p style="text-align:center;">**Universidad de CostaRica**</p>
+<p style="text-align:center;">**Seguridad de Sistemas Computacionales**</p>
 **CI0143 - I Semestre 2025**
 **Steven Castro Oreamuno**
 **Rafa Isaac Gutiérrez Ramírez C03640**
