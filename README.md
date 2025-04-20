@@ -51,7 +51,7 @@ Se puede obtener ambas versiones mediante la clonacion del repositorio con el si
 
 ### Compilacion
 
-Usando la terminal desde la ubicacion del archivo fuente corre el comando
+Usando la terminal desde la ubicacion del archivo fuente [*/calcv0* para la version plana y */calcStrucutured* para la version estructurada]laccorre el comando
 ```
      make
 ```
