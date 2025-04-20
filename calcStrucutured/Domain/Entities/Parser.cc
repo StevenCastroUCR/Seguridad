@@ -3,11 +3,8 @@
 
 using namespace std;
 
-
-
 Parser::Parser()
 {
-   
 }
 
 /// @brief Procesa una operacion matematica escrita en palabras, convierte las palabras a numeros,
@@ -21,7 +18,7 @@ string Parser::textParser()
         string input;
         cout << "Escriba la operacion:\n";
         getline(cin, input);
-     
+
         string inputToCheck;
         for (char c : input)
         {
@@ -31,51 +28,56 @@ string Parser::textParser()
             }
         }
         string parsed = inputToNumbers(inputToCheck);
-  
 
-        
         bool validInput = true;
-        for (char c : parsed) {
-            if (!isdigit(c) && c != '+' && c != '-' && c != '*' && c != '/' && c != '(' && c != ')') {
+        for (char c : parsed)
+        {
+            if (!isdigit(c) && c != '+' && c != '-' && c != '*' && c != '/' && c != '(' && c != ')')
+            {
                 cout << "Error: La entrada contiene caracteres no válidos." << endl;
                 validInput = false;
                 break;
             }
         }
 
-        if (!validInput || parsed.empty()) {
+        if (!validInput || parsed.empty())
+        {
             cout << "Por favor, ingrese una operación válida.\n";
             continue;
         }
 
-
-        if (parsed.empty()) {
+        if (parsed.empty())
+        {
             continue;
         }
-        try {
+        try
+        {
             auto tokens = tokenize(parsed);
 
             auto postfix = infixToPostfix(tokens);
             double result = evalPostfix(postfix);
             cout << "Resultado: " << result << endl;
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception &e)
+        {
             cout << "Error al procesar la operación: " << e.what() << endl;
         }
 
-        if (!opContinue()) {
+        if (!opContinue())
+        {
             return "";
-        }        
+        }
     }
     return "";
 }
 
-/// @brief Convierte una cadena de entrada con numeros en forma de palabra 
+/// @brief Convierte una cadena de entrada con numeros en forma de palabra
 ///        en una expresion matematica con numeros y operadores aritmeticos.
 /// @param input Cadena de texto que contiene una operacion matematica con numeros escritos en palabras.
 /// @return Cadena convertida que contiene numeros y operadores listos para ser evaluados.
-string Parser::inputToNumbers(const string& input)
+string Parser::inputToNumbers(const string &input)
 {
-    bool skip =false;
+    bool skip = false;
     string parsed;
     vector<size_t> operandPositions;
 
@@ -134,19 +136,19 @@ string Parser::inputToNumbers(const string& input)
                     }
                     else
                     {
-                       // skip = true;
-                        //break;
-                        parsed ="~";
+                        // skip = true;
+                        // break;
+                        parsed = "~";
                     }
                 }
                 else
                 {
-                  //  skip = true;
-                   // break;
-                   parsed ="~";
+                    //  skip = true;
+                    // break;
+                    parsed = "~";
                 }
             }
-         
+
             parsed += numero;
         }
 
@@ -163,14 +165,16 @@ string Parser::inputToNumbers(const string& input)
 
 /// @brief Pregunta al usuario si desea realizar otra operacion.
 /// @return `true` si el usuario desea continuar, `false` si desea salir.
-bool Parser::opContinue() {
+bool Parser::opContinue()
+{
     string nextStep;
     while (true)
     {
-        cout<< "Quiere hacer otra operacion? 1-) Si , 2-) No: \n";
+        cout << "Quiere hacer otra operacion? 1-) Si , 2-) No: \n";
         nextStep = utility.readInput("", 1);
 
-        try {
+        try
+        {
             int option = stoi(nextStep);
             if (option == 1)
             {
@@ -184,7 +188,9 @@ bool Parser::opContinue() {
             {
                 cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
             }
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception &e)
+        {
             cout << "Entrada invalida. Por favor escriba 1 o 2.\n";
         }
     }
@@ -290,24 +296,43 @@ std::vector<std::string> Parser::infixToPostfix(const std::vector<std::string> &
     return output;
 }
 
-
 /// @brief Evalua una expresion en forma posfija y regresa el resultado,
 /// @param postfix Vector de strings que representa la expresion aritmetica
 ///                 El string puede ser un entero o un operador
 /// @return Regresa el valor entero resultante de la expresion posfija
-double Parser::evalPostfix(const vector<string>& postfix) {
+double Parser::evalPostfix(const vector<string> &postfix)
+{
     stack<double> evalStack;
 
-    for (const string& token : postfix) {
-        if (isdigit(token[0])) {
+    for (const string &token : postfix)
+    {
+        if (isdigit(token[0]))
+        {
             evalStack.push(stoi(token));
-        } else {
-            double b = evalStack.top(); evalStack.pop();
-            double a = evalStack.top(); evalStack.pop();
-            if (token == "+") evalStack.push(a + b);
-            else if (token == "-") evalStack.push(a - b);
-            else if (token == "*") evalStack.push(a * b);
-            else if (token == "/") evalStack.push(a / b);
+        }
+        else
+        {
+            double b = evalStack.top();
+            evalStack.pop();
+            double a = evalStack.top();
+            evalStack.pop();
+            if (token == "+")
+                evalStack.push(a + b);
+            else if (token == "-")
+                evalStack.push(a - b);
+            else if (token == "*")
+                evalStack.push(a * b);
+            else if (token == "/")
+            {
+                if (b == 0)
+                {
+                    throw std::runtime_error("Division por cero");
+                }
+                else
+                {
+                    evalStack.push(a / b);
+                }
+            }
         }
     }
 

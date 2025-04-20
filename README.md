@@ -200,3 +200,6 @@ Crea nuevo usuario
 
 ![Imagen 2](images/testStructured/image2.png)  
 Realiza calculo
+
+![Imagen 3](images/testStructured/image3.png)  
+Realiza calculo con division por cero
