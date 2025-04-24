@@ -1,0 +1,30 @@
+User->Controller: run()
+Controller->Users: authentication(isAdmin)
+Users->Utility: readInput("Digite nombre usuario")
+Utility-->Users: username
+Users->Users: userExists(username)
+Users->FileSystem: open users.txt
+FileSystem-->Users: file
+Users->Users: getUserData(file)
+Users->Utility: readInput("Digite contrasena")
+Utility-->Users: password
+Users->Users: validate login
+Users->Utility: log("login successful / error")
+Users-->Controller: true / false
+
+Controller->Utility: readInput("Digite una opcion", 1)
+Utility-->Controller: option
+Controller->Parser: textParser()
+Parser->User: prompt("Escriba la operacion")
+User-->Parser: input
+Parser->Parser: inputToNumbers(input)
+Parser->Parser: tokenize(parsed)
+Parser->Parser: infixToPostfix(tokens)
+Parser->Parser: evalPostfix(postfix)
+Parser->User: print(result)
+Parser->Parser: opContinue()
+Parser->Utility: readInput("", 1)
+Utility-->Parser: userOption
+Parser-->Controller: ""
+Controller-->User: "Cerrando Sesion"
+Controller->System: exit(0)
