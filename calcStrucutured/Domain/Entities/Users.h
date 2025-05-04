@@ -22,7 +22,7 @@ Utility utility;
 
 private:
     bool userExists(const std::string &userVerfication);
-    bool Users::getUserData(ifstream &usersFile, string &userType
+    bool getUserData(ifstream &usersFile, string &userType
         , string &user, string &pass, int &attempts);
     void updateUserAttempts(const string &username, int newAttempts);
 };
