@@ -1,5 +1,7 @@
 #include "Users.h"
 
+const int MAX_ATTEMPTS = 3;
+
 using namespace std;
 
 Users::Users()
@@ -18,9 +20,6 @@ Users::~Users()
 /// @return true si la autenticacion fue exitosa, false en caso contrario.
 bool Users::authentication(bool &isAdmin)
 {
-    int attempts = 0;
-    const int maxAttempts = 3;
-
     ifstream usersFile("users.txt");
 
     if (!usersFile)
@@ -29,7 +28,7 @@ bool Users::authentication(bool &isAdmin)
         return false;
     }
 
-    while (attempts < maxAttempts)
+    while (true)
     {
         string idUser = utility.readInput("Digite nombre usuario : ", 20);
         if (!userExists(idUser )) {
@@ -43,27 +42,53 @@ bool Users::authentication(bool &isAdmin)
         usersFile.seekg(0, ios::beg);
         
         string start, user, pass;
-        while (getUserData(usersFile, start, user, pass))
+        int attempts;
+        bool matchFound = false;
+        while (getUserData(usersFile, start, user, pass, attempts))
         {
-            if (idUser == user && password == pass)
+            if (idUser == user)
             {
-                isAdmin = (start == "admin");
-                utility.log("login successful: " + idUser);
-                cout << (isAdmin ? "Cuenta Administrador " : "")
-                     << "Bienvenido: " << idUser << "!" << endl;
-                return true;
+                matchFound = true; 
+
+                if (attempts >= MAX_ATTEMPTS) {
+                    std::cout << "Cuenta bloqueada por demasiados intentos fallidos." << endl;
+                    return false;
+                }
+
+                if (password == pass) {
+                    isAdmin = (start == "admin");
+                    updateUserAttempts(idUser, 0);
+                    utility.log("login successful: " + idUser);
+                    std::cout << (isAdmin ? "Cuenta Administrador " : "")
+                        << "Bienvenido: " << idUser << "!" << endl;
+                    return true;
+                }
+                else
+                {
+                    updateUserAttempts(idUser, attempts + 1);
+                    utility.log("login error: " + idUser);
+                    int remainingAttempts = MAX_ATTEMPTS - (attempts + 1);
+
+                    std::cout << "Error: usuario o contrasena invalidos" << endl;
+                    if (remainingAttempts > 0)
+                    {
+                        std::cout << "Intentos restantes: " << remainingAttempts << endl;
+                    }
+                    else
+                    {
+                        std::cout << "Agoto el numero de intentos" << endl;
+                    }
+                    
+                    break;
+                }
             }
         }
-        utility.log("login error: " + idUser);
-        cout << "Error: usuario o contrasena invalidos" << endl;
-        attempts++;
-        if (attempts < maxAttempts)
+        if (!matchFound)
         {
-            cout << "Intentos restantes: " << (maxAttempts - attempts) << endl;
+            cout << "Error inesperado: No se pudo encontrar el usuario" << endl;
+            return false;
         }
     }
-
-    cout << "Agoto el numero de intentos" << endl;
     return false;
 };
 
@@ -110,10 +135,10 @@ void Users::createUser()
         switch (stoi(isAdmin))
         {
         case 1:
-            line = "admin " + idUser + " " + pass;
+            line = "admin " + idUser + " " + pass + " "+ "0";
             break;
         case 2:
-            line = idUser + " " + pass;
+            line = idUser + " " + pass + " "+ "0";
             break;
         default:
             cout << "Opcion invalida\n";
@@ -143,8 +168,9 @@ bool Users::userExists(const string &userVerfication)
 {
     ifstream usersFile("users.txt");
     string start, user, pass;
+    int attempts;
 
-    while (getUserData(usersFile, start, user, pass))
+    while (getUserData(usersFile, start, user, pass, attempts))
     {
         if (user == userVerfication)
         {
@@ -161,7 +187,8 @@ bool Users::userExists(const string &userVerfication)
 /// @param user Dato de usuario a verificar
 /// @param pass Dato de contrasena a verificar
 /// @return Regresa verdadero si la informacion concuerda con la introducida
-bool Users::getUserData(ifstream &usersFile, string &userType, string &user, string &pass) {
+bool Users::getUserData(ifstream &usersFile, string &userType
+    , string &user, string &pass, int &attempts) {
     string line;
     while (getline(usersFile, line)) {
         if (!line.empty() && line.back() == '\r') {
@@ -172,13 +199,68 @@ bool Users::getUserData(ifstream &usersFile, string &userType, string &user, str
         iss >> userType;
 
         if (userType == "admin") {
-            iss >> user >> pass;
+            iss >> user >> pass >> attempts; 
         } else {
             user = userType;
-            iss >> pass;
+            iss >> pass >> attempts;
         }
 
         return true;
     }
     return false;
+}
+
+void Users::updateUserAttempts(const string& username, int newAttempts)
+{
+    fstream file("users.txt", ios::in | ios::out);
+    if (!file)
+    {
+        cerr << "Error: No se pudo abrir el archivo users.txt" << endl;
+        return;
+    }
+
+    string line;
+    streampos pos = file.tellg();
+
+    while (getline(file, line))
+    {
+        streampos lineStart = pos;  // inicio de linea
+        pos = file.tellg();         // inicio \n
+
+        string decryptedLine = xorCipher(line);
+        istringstream iss(decryptedLine);
+        string role, user, pass;
+        char attemptChar = '0';
+
+        iss >> role;
+        if (role == "admin")
+        {
+            iss >> user >> pass >> attemptChar;
+        }
+        else
+        {
+            user = role;
+            role = "";
+            iss >> pass >> attemptChar;
+        }
+
+        if (user == username)
+        {
+            // Si es > a 3 no incrementa
+            int currentAttempts = attemptChar - '0';
+            if (currentAttempts >= MAX_ATTEMPTS)
+                return;
+
+            int attemptToWrite = newAttempts;
+            if (attemptToWrite > MAX_ATTEMPTS) attemptToWrite = MAX_ATTEMPTS;
+
+            // cursor al final de linea '\n'
+            file.seekp(lineStart + static_cast<streamoff>(line.length() - 1));
+            char encryptedAttempt = xorCipher(string(1, '0' + attemptToWrite))[0];
+            file.write(&encryptedAttempt, 1);
+            break;
+        }
+    }
+
+    file.close();
 }

@@ -1,6 +1,8 @@
 #include "Utility.h"
+
 #include <iostream>
 #include <string.h>
+
 
 
 Utility::Utility()
@@ -56,6 +58,16 @@ string Utility:: readInput(const string &prompt, size_t maxLength)
 /// @param event Descripcion del evento que se desea registrar.
 void Utility:: log(const string &event)
 {
+
+    if (fs::exists(LOG_FILE) && fs::file_size(LOG_FILE) >= MAX_LOG_SIZE)
+    {
+        if (fs::exists(BACKUP_FILE))
+        {
+            fs::remove(BACKUP_FILE); 
+        }
+        fs::rename(LOG_FILE, BACKUP_FILE); 
+    }
+
     ofstream logFile("log.txt", ios::app);
     if (!logFile)
     {
