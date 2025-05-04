@@ -75,20 +75,14 @@ bool Users::authentication(bool &isAdmin)
                     if (remainingAttempts > 0)
                     {
                         std::cout << "Intentos restantes: " << remainingAttempts << endl;
-                        return true;
                     }
                     else
                     {
                         std::cout << "Agoto el numero de intentos" << endl;
                     }
-                    return false;
+                    break;
                 }
             }
-        }
-        if (!matchFound)
-        {
-            cout << "Error inesperado: No se pudo encontrar el usuario" << endl;
-            return false;
         }
     }
     return false;
