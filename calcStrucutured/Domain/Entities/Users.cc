@@ -31,6 +31,8 @@ bool Users::authentication(bool &isAdmin)
     while (true)
     {
         string idUser = utility.readInput("Digite nombre usuario : ", 20);
+        usersFile.clear();
+        usersFile.seekg(0, ios::beg);
         if (!userExists(idUser )) {
             cout << "Error: El usuario no existe" << endl;
             continue;
@@ -78,11 +80,12 @@ bool Users::authentication(bool &isAdmin)
                     {
                         std::cout << "Agoto el numero de intentos" << endl;
                     }
-                    
-                    break;
+                    usersFile.close();
+                    return false;
                 }
             }
         }
+        usersFile.close();
         if (!matchFound)
         {
             cout << "Error inesperado: No se pudo encontrar el usuario" << endl;
@@ -210,6 +213,9 @@ bool Users::getUserData(ifstream &usersFile, string &userType
     return false;
 }
 
+/// @brief 
+/// @param username 
+/// @param newAttempts 
 void Users::updateUserAttempts(const string& username, int newAttempts)
 {
     fstream file("users.txt", ios::in | ios::out);
