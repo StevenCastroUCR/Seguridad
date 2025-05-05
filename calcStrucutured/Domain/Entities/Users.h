@@ -25,6 +25,7 @@ private:
     bool getUserData(ifstream &usersFile, string &userType
         , string &user, string &pass, int &attempts);
     void updateUserAttempts(const string &username, int newAttempts);
+    string readHiddenPassword(const string &prompt, size_t maxLength);
 };
 
 #endif // USERS_H

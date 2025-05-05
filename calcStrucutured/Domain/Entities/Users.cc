@@ -1,5 +1,7 @@
 #include "Users.h"
 
+#include <conio.h> 
+
 const int MAX_ATTEMPTS = 3;
 
 using namespace std;
@@ -38,7 +40,7 @@ bool Users::authentication(bool &isAdmin)
             continue;
         }
 
-        string password = utility.readInput("Digite la contrasena: ", 20);
+        string password = readHiddenPassword("Digite la contrasena: ", 20);
         
         usersFile.clear();
         usersFile.seekg(0, ios::beg);
@@ -112,9 +114,9 @@ void Users::createUser()
 
     while (true)
     {
-        pass = utility.readInput("Digite la contrasena: ", 20);
+        pass = readHiddenPassword("Digite la contrasena: ", 20);
         string cpass;
-        cpass = utility.readInput("Digite la contrasena nuevamente: ", 20);
+        cpass = readHiddenPassword("Digite la contrasena nuevamente: ", 20);
         if (!(pass == cpass))
         {
             utility.log("Error user creation, password mismatch");
@@ -262,4 +264,63 @@ void Users::updateUserAttempts(const string& username, int newAttempts)
     }
 
     file.close();
+}
+
+/// @brief 
+/// @param prompt 
+/// @param maxLength 
+/// @return Password oculta
+string Users::readHiddenPassword(const string& prompt, size_t maxLength)
+{
+    string input;
+    while (true)
+    {
+        input.clear();
+
+#ifdef _WIN32
+        cout << prompt;
+        char ch;
+        while ((ch = _getch()) != '\r') {
+            if (ch == '\b') {
+                if (!input.empty()) {
+                    input.pop_back();
+                    cout << "\b \b";
+                }
+            } else if (isprint(ch)) {
+                input += ch;
+                cout << '*';
+            }
+        }
+        cout << endl;
+#else
+        cout << prompt;
+        system("stty -echo");
+        getline(cin, input);
+        system("stty echo");
+        cout << endl;
+#endif
+
+        if (input.length() > maxLength) {
+            utility.log("Error: Input exceeds maximum length");
+            cout << "Error: La entrada excede el limite de " << maxLength << " caracteres. Intente de nuevo.\n";
+            continue;
+        }
+
+        string sanitizedInput = utility.sanitizeInput(input);
+        if (sanitizedInput.empty()) {
+            utility.log("Error: Information not entered");
+            cout << "Error: No ha digitado.\n";
+        } else {
+            istringstream iss(sanitizedInput);
+            string word, leftover;
+            iss >> word >> leftover;
+
+            if (!leftover.empty()) {
+                utility.log("Error invalid input");
+                cout << "La entrada no es valida intelo de nuevo\n";
+            } else {
+                return word;
+            }
+        }
+    }
 }
